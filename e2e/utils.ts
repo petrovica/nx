@@ -7,20 +7,19 @@ const projectName: string = 'proj';
 export function runNgNew(command?: string, silent?: boolean): string {
   return execSync(`../node_modules/.bin/ng new proj ${command}`, {
     cwd: `./tmp`,
-    ...(silent ? {stdio: ['ignore', 'ignore', 'ignore']} : {})
+    ...(silent ? { stdio: ['ignore', 'ignore', 'ignore'] } : {})
   }).toString();
 }
 
 export function newProject(): void {
   cleanup();
   if (!directoryExists('./tmp/proj_backup')) {
-    //TODO delete the try catch after 0.8.0 is released
+    // TODO delete the try catch after 0.8.0 is released
     try {
       runNgNew('--collection=@nrwl/schematics --npmScope=proj', true);
-    } catch (e) {
-    }
+    } catch (e) {}
     copyMissingPackages();
-    execSync('npm run postinstall', {cwd: './tmp/proj'});
+    execSync('npm run postinstall', { cwd: './tmp/proj' });
     execSync('mv ./tmp/proj ./tmp/proj_backup');
   }
   execSync('cp -a ./tmp/proj_backup ./tmp/proj');
@@ -28,31 +27,30 @@ export function newProject(): void {
 
 export function newBazelProject(): void {
   cleanup();
-  if (!directoryExists('./tmp/proj_backup')) {
-    //TODO delete the try catch after 0.8.0 is released
-    try {
-      runNgNew('--collection=@nrwl/bazel --npmScope=proj', true);
-    } catch (e) {
-    }
-    copyMissingPackages();
-    execSync('npm run postinstall', {cwd: './tmp/proj'});
-    execSync('mv ./tmp/proj ./tmp/proj_backup');
-  }
-  execSync('cp -a ./tmp/proj_backup ./tmp/proj');
+  // TODO delete the try catch after 0.8.0 is released
+  try {
+    runNgNew('--collection=@nrwl/bazel --npmScope=proj --yarn', true);
+  } catch (e) {}
+  copyMissingPackages();
+  execSync('npm run postinstall', { cwd: './tmp/proj' });
 }
 
 export function createNxWorkspace(command: string): string {
   cleanup();
   return execSync(
-    `node ../node_modules/@nrwl/schematics/bin/create-nx-workspace.js ${command}`,
-    {
-      cwd: `./tmp`
-    }
+    `node ../node_modules/@nrwl/schematics/bin/create-nx-workspace.js --yarn ${command}`,
+    { cwd: `./tmp` }
   ).toString();
 }
 
 export function copyMissingPackages(): void {
-  const modulesToCopy = ['@ngrx', 'jasmine-marbles', '@nrwl', 'angular', '@angular/upgrade'];
+  const modulesToCopy = [
+    '@ngrx',
+    'jasmine-marbles',
+    '@nrwl',
+    'angular',
+    '@angular/upgrade'
+  ];
   modulesToCopy.forEach(m => copyNodeModule(projectName, m));
 }
 
@@ -72,7 +70,10 @@ export function runCLI(
       cwd: `./tmp/${projectName}`
     })
       .toString()
-      .replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '');
+      .replace(
+        /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,
+        ''
+      );
   } catch (e) {
     if (opts.silenceError) {
       return e.stdout.toString();
@@ -83,12 +84,26 @@ export function runCLI(
   }
 }
 
-export function newApp(name: string): string {
-  return runCLI(`generate app ${name}`);
+export function newApp(name: string, schematics?: string): string {
+  return runCLI(`generate app ${name} ${schematics}`);
 }
 
-export function newLib(name: string): string {
-  return runCLI(`generate lib ${name}`);
+export function newABazelpp(name: string): string {
+  return runCLI(
+    `generate app ${name} --collection=@nrwl/bazel --npmScope=proj`
+  );
+}
+
+export function newLib(name: string, collection?: string): string {
+  const collectionFlag = collection ? `--collection=${collection}` : '';
+
+  return runCLI(`generate lib ${name} ${collectionFlag}`);
+}
+
+export function newComponent(name: string, collection?: string): string {
+  const collectionFlag = collection ? `--collection=${collection}` : '';
+
+  return runCLI(`generate component ${name} ${collectionFlag}`);
 }
 
 export function runSchematic(command: string): string {
@@ -107,7 +122,9 @@ export function updateFile(f: string, content: string): void {
 
 export function checkFilesExist(...expectedFiles: string[]) {
   expectedFiles.forEach(f => {
-    const ff = f.startsWith('/') ? f : path.join(getCwd(), 'tmp', projectName, f);
+    const ff = f.startsWith('/')
+      ? f
+      : path.join(getCwd(), 'tmp', projectName, f);
     if (!exists(ff)) {
       throw new Error(`File '${ff}' does not exist`);
     }
@@ -121,6 +138,10 @@ export function readFile(f: string) {
 
 export function cleanup() {
   execSync('rm -rf ./tmp/proj');
+}
+
+export function purge() {
+  execSync('rm -rf ./tmp');
 }
 
 export function getCwd(): string {
