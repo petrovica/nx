@@ -27,12 +27,16 @@ export function newProject(): void {
 
 export function newBazelProject(): void {
   cleanup();
-  // TODO delete the try catch after 0.8.0 is released
-  try {
-    runNgNew('--collection=@nrwl/bazel --npmScope=proj --yarn', true);
-  } catch (e) {}
-  copyMissingPackages();
-  execSync('npm run postinstall', { cwd: './tmp/proj' });
+  if (!directoryExists('./tmp/proj_bazel_backup')) {
+    // TODO delete the try catch after 0.8.0 is released
+    try {
+      runNgNew('--collection=@nrwl/bazel --npmScope=proj', true);
+    } catch (e) {}
+    copyMissingPackages();
+    execSync('npm run postinstall', { cwd: './tmp/proj' });
+    execSync('mv ./tmp/proj ./tmp/proj_bazel_backup');
+  }
+  execSync('cp -a ./tmp/proj_bazel_backup ./tmp/proj');
 }
 
 export function createNxWorkspace(command: string): string {
@@ -84,26 +88,16 @@ export function runCLI(
   }
 }
 
-export function newApp(name: string, schematics?: string): string {
-  return runCLI(`generate app ${name} ${schematics}`);
+export function newApp(name: string): string {
+  return runCLI(`generate app ${name}`);
 }
 
-export function newABazelpp(name: string): string {
-  return runCLI(
-    `generate app ${name} --collection=@nrwl/bazel --npmScope=proj`
-  );
+export function newLib(name: string): string {
+  return runCLI(`generate lib ${name}`);
 }
 
-export function newLib(name: string, collection?: string): string {
-  const collectionFlag = collection ? `--collection=${collection}` : '';
-
-  return runCLI(`generate lib ${name} ${collectionFlag}`);
-}
-
-export function newComponent(name: string, collection?: string): string {
-  const collectionFlag = collection ? `--collection=${collection}` : '';
-
-  return runCLI(`generate component ${name} ${collectionFlag}`);
+export function newComponent(name: string): string {
+  return runCLI(`generate component ${name}`);
 }
 
 export function runSchematic(command: string): string {

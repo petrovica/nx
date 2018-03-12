@@ -1,14 +1,6 @@
 import { newApp, newProject, runCLI, updateFile, cleanup } from '../utils';
 
 describe('DowngradeModule', () => {
-  beforeAll(() => {
-    cleanup();
-  });
-
-  afterAll(() => {
-    cleanup();
-  });
-
   it(
     'should generate a downgradeModule setup',
     () => {

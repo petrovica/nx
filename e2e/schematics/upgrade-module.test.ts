@@ -1,14 +1,6 @@
 import { newApp, newProject, runCLI, updateFile, cleanup } from '../utils';
 
 describe('Upgrade', () => {
-  beforeAll(() => {
-    cleanup();
-  });
-
-  afterAll(() => {
-    cleanup();
-  });
-
   it(
     'should generate an UpgradeModule setup',
     () => {

@@ -10,14 +10,6 @@ import {
 } from '../utils';
 
 describe('Command line', () => {
-  beforeAll(() => {
-    cleanup();
-  });
-
-  afterAll(() => {
-    cleanup();
-  });
-
   it(
     'lint should ensure module boundaries',
     () => {

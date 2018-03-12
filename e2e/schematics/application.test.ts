@@ -8,14 +8,6 @@ import {
 } from '../utils';
 
 describe('Nrwl Workspace', () => {
-  beforeAll(() => {
-    cleanup();
-  });
-
-  afterAll(() => {
-    cleanup();
-  });
-
   it(
     'should work',
     () => {

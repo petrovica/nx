@@ -1,3 +1,5 @@
+import { cleanup } from '../utils';
+
 // import {
 //   checkFilesExist,
 //   newApp,
@@ -14,14 +16,13 @@
 //   return it(`should ${testDescription}`, test, 100000);
 // }
 
-// describe('Nrwl Workspace (Bazel)', () => {
-//   beforeAll(() => {
-//     cleanup();
-//   });
+describe('Nrwl Workspace (Bazel)', () => {
+  it('should pass', () => {});
 
-//   afterAll(() => {
-//     cleanup();
-//   });
+  afterAll(() => {
+    cleanup();
+  });
+});
 
 //   afterEach(() => {
 //     runCommand('bazel build ...');

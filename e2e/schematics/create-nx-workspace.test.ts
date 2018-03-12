@@ -9,14 +9,6 @@ import {
  * Too slow to run on CI :(
  */
 xdescribe('CreateNxWorkspace', () => {
-  beforeAll(() => {
-    cleanup();
-  });
-
-  afterAll(() => {
-    cleanup();
-  });
-
   it(
     'should create a new workspace using npm',
     () => {
@@ -50,7 +42,9 @@ xdescribe('CreateNxWorkspace', () => {
   it(
     'should create a new workspace with the --directory option',
     () => {
-      const res = createNxWorkspace('myproj --npmScope=myscope --directory=proj');
+      const res = createNxWorkspace(
+        'myproj --npmScope=myscope --directory=proj'
+      );
       expect(res).toContain("Project 'myproj' successfully created.");
       checkFilesExist('package-lock.json');
     },

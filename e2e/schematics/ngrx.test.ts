@@ -1,14 +1,6 @@
 import { newApp, newProject, runCLI, updateFile, cleanup } from '../utils';
 
 describe('ngrx', () => {
-  beforeAll(() => {
-    cleanup();
-  });
-
-  afterAll(() => {
-    cleanup();
-  });
-
   it(
     'should work',
     () => {
